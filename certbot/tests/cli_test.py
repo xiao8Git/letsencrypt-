@@ -323,6 +323,18 @@ class ParseTest(unittest.TestCase):
         self.assertRaises(
             errors.Error, self.parse, "-n --force-interactive".split())
 
+    def test_log_backups_error(self):
+        with mock.patch('certbot.cli.sys.stderr'):
+            self.assertRaises(
+                SystemExit, self.parse, "--log-backups foo".split())
+            self.assertRaises(
+                SystemExit, self.parse, "--log-backups -42".split())
+
+    def test_log_backups_success(self):
+        value = "42"
+        namespace = self.parse(["--log-backups", value])
+        self.assertEqual(namespace.log_backups, int(value))
+
 
 class DefaultTest(unittest.TestCase):
     """Tests for certbot.cli._Default."""
